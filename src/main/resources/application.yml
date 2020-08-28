@@ -1,0 +1,44 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    password: 12345
+    url: jdbc:postgresql://localhost/postgres
+    username: dbuser
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: true
+
+  application:
+    name: backend-covid-registration
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: moscow
+      auto-offset-reset: earliest
+      key-deserializer:  org.apache.kafka.common.serialization.LongDeserializer
+      value-deserializer: io.confluent.kafka.streams.serdes.avro.SpecificAvroDeserializer
+      properties:
+        schema:
+          registry:
+            url: http://localhost:8081
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer
+      properties:
+        schema:
+          registry:
+            url: http://localhost:8081
+app:
+  threads: 3
+  moscow-topic: moscowTopic
+  krasnodar-topic: krasnodarTopic
+  result-topic: resultTopic
